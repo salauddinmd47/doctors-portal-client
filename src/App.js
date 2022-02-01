@@ -10,15 +10,22 @@ import Home from './Pages/Home/Home/Home';
 import Appointment from './Pages/Appointment/Appointment/Appointment';
 import Login from './Pages/Login/Login';
 import Register from './Pages/Login/Register';
+import AuthProvider from './AuthProvider/AuthProvider';
+import PrivateRoute from './Pages/Login/PrivateRoute';
+import Dashboard from './Pages/Dashboard/Dashboard/Dashboard';
 
 function App() {
   return (
     <div className="App">
+       <AuthProvider>
        <Router>
        <Switch>
-          <Route path="/appointment">
+          <PrivateRoute path="/appointment">
             <Appointment />
-          </Route>
+          </PrivateRoute>
+          <PrivateRoute path="/dashboard">
+            <Dashboard />
+          </PrivateRoute>
           <Route path="/login">
             <Login />
           </Route>
@@ -30,6 +37,7 @@ function App() {
           </Route>
         </Switch>
        </Router>
+       </AuthProvider>
     </div>
   );
 }

@@ -2,7 +2,7 @@ import { Button, Grid, Paper, Typography } from '@mui/material';
 import React from 'react';
 import BookingModal from '../../Appointment/Modal/BookingModal'
 
-const Booking = ({booking, date}) => {
+const Booking = ({booking, date,setBookingSuccess}) => {
     const {name, time, space} = booking
     const [bookingOpen, setBookingOpen] = React.useState(false);
     const handleModalOpen = () => setBookingOpen(true);
@@ -31,6 +31,7 @@ const Booking = ({booking, date}) => {
         bookingOpen={bookingOpen}
         booking={booking}
         date={date}
+        setBookingSuccess={setBookingSuccess}
         handleModalColse={handleModalColse}
         ></BookingModal>
         </>

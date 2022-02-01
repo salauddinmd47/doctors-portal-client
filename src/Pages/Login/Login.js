@@ -5,12 +5,18 @@ import {
   Paper,
   TextField,
   Typography,
+  Alert,
+  CircularProgress
 } from "@mui/material";
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory, useLocation } from "react-router-dom";
 import LoginImage from "../../images/login.png";
+import useAuth from '../../hooks/useAuth'
 const Login = () => {
+  const {user , loginUser, loading, authError,googleSignIn} = useAuth()
   const [loginData, setLoginData] = useState({});
+  const history = useHistory()
+  const location = useLocation()
   const handleOnchange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
@@ -20,8 +26,12 @@ const Login = () => {
     e.preventDefault();
   };
   const handleLOginSubmit = (e) => {
+    loginUser(loginData.email, loginData.password, location, history)
     e.preventDefault();
   };
+  const signInWithGoogle = ()=>{
+    googleSignIn(location, history)
+  }
   return (
     <Container>
       <Grid container>
@@ -59,7 +69,20 @@ const Login = () => {
               <NavLink to ="/register">
                   <Button variant="text">New user? Please register</Button>
               </NavLink>
+
             </form>
+            <Button
+                sx={{ width: "80%", m: 1, backgroundColor: "green" }}
+                type="submit"
+                variant="contained"
+                onClick={signInWithGoogle}
+              >
+                Google SignIn
+              </Button>
+            {
+              loading && <CircularProgress color="secondary" />}
+            {user?.email && <Alert severity="success">Login  successfully</Alert> }
+            {authError && <Alert severity="error">{authError}</Alert>}
           </Paper>
         </Grid>
         <Grid xs={12} md={6} item>
