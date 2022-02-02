@@ -1,44 +1,75 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import MailIcon from '@mui/icons-material/Mail';
-import MenuIcon from '@mui/icons-material/Menu';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import { Button, Grid } from '@mui/material';
-import Calender from '../../../Shared/Calender/Calender';
-import Appointments from '../Appointments/Appointments';
-import { NavLink } from 'react-router-dom';
+import * as React from "react";
+import PropTypes from "prop-types";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
+import Divider from "@mui/material/Divider";
+import Drawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import InboxIcon from "@mui/icons-material/MoveToInbox";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import MailIcon from "@mui/icons-material/Mail";
+import MenuIcon from "@mui/icons-material/Menu";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import { Button, Grid } from "@mui/material";
+import { NavLink } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useParams,
+  useRouteMatch,
+} from "react-router-dom";
+import DashboardHome from "../DashboardHome/DashboardHome";
+import MakeAdmin from "../MakeAdmin/MakeAdmin";
+import AddDoctord from "./AddDoctors/AddDoctord";
+import useAuth from "../../../hooks/useAuth";
 
 const drawerWidth = 240;
 
 function Dashboard(props) {
   const { window } = props;
+  const {admin} = useAuth()
   const [mobileOpen, setMobileOpen] = React.useState(false);
-    const [date, setDate] = React.useState(new Date())
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
+  let { path, url } = useRouteMatch();
   const drawer = (
     <div>
       <Toolbar />
-      <NavLink to='/appointment'>
-            <Button color="inherit">Take new appointment</Button>
-            </NavLink>
+      <List>
+      <NavLink to="/appointment">
+        <Button color="inherit">Take new appointment</Button>
+      </NavLink>
+        </List> 
+      <List>
+      <NavLink to={`${url}`}>
+        <Button color="inherit">Dashboard</Button>
+      </NavLink>
+      </List>
+      {
+        admin && <Box>
+          <List>
+      <NavLink to={`${url}/makeAdmin`}>
+        <Button color="inherit">Make an Admin</Button>
+      </NavLink>
+      </List>
+      <List>
+      <NavLink to={`${url}/addDoctor`}>
+        <Button color="inherit">Add a Doctor</Button>
+      </NavLink>
+      </List>
+        </Box>
+      }
       <Divider />
       <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
           <ListItem button key={text}>
             <ListItemIcon>
               {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
@@ -46,14 +77,15 @@ function Dashboard(props) {
             <ListItemText primary={text} />
           </ListItem>
         ))}
-      </List> 
+      </List>
     </div>
   );
 
-  const container = window !== undefined ? () => window().document.body : undefined;
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -68,7 +100,7 @@ function Dashboard(props) {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
+            sx={{ mr: 2, display: { sm: "none" } }}
           >
             <MenuIcon />
           </IconButton>
@@ -92,8 +124,11 @@ function Dashboard(props) {
             keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
           }}
         >
           {drawer}
@@ -101,8 +136,11 @@ function Dashboard(props) {
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            display: { xs: "none", sm: "block" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
           }}
           open
         >
@@ -111,33 +149,31 @@ function Dashboard(props) {
       </Box>
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+        }}
       >
         <Toolbar />
-        <Box>
-            <Grid container spacing={2}>
-                <Grid item md={4} xs={12}>
-                    <Calender
-                        date={date}
-                        setDate={setDate}
-                    ></Calender>
-                </Grid>
-                <Grid item md={8} xs={12}>
-                    <Appointments
-                    date={date}
-                    setDate={setDate}
-                    ></Appointments>
-                </Grid>
-            </Grid>
-        </Box> 
-         
+
+        <Switch>
+          <Route exact path={path}>
+            <DashboardHome />
+          </Route>
+          <Route path={`${path}/makeAdmin`}>
+            <MakeAdmin />
+          </Route>
+          <Route path={`${path}/addDoctor`}>
+            <AddDoctord />
+          </Route>
+        </Switch>
       </Box>
     </Box>
   );
 }
 
 Dashboard.propTypes = {
-   
   window: PropTypes.func,
 };
 
